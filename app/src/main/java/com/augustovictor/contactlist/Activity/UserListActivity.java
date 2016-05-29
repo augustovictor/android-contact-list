@@ -48,8 +48,16 @@ public class UserListActivity extends AppCompatActivity {
         mAddContactsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                contacts.add(contacts.size(), new Contact("Victor", true));
-                adapter.notifyItemInserted(contacts.size());
+                // Adding one contact
+//                contacts.add(contacts.size(), new Contact("Victor", true));
+//                adapter.notifyItemInserted(contacts.size());
+
+                // Updating existing list - Adding many contacts
+                int currentSize = adapter.getItemCount();
+                ArrayList<Contact> newItems = Contact.createContactList(20);
+                contacts.addAll(newItems);
+                adapter.notifyItemRangeInserted(currentSize, newItems.size());
+
             }
         });
     }
