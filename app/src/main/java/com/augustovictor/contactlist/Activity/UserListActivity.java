@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.augustovictor.contactlist.Adapter.ContactsAdapter;
+import com.augustovictor.contactlist.Helper.ContactsDatabaseHelper;
 import com.augustovictor.contactlist.Helper.DividerItemDecoration;
 import com.augustovictor.contactlist.Model.Contact;
 import com.augustovictor.contactlist.R;
@@ -23,6 +24,7 @@ public class UserListActivity extends AppCompatActivity {
     // STEP 1
     ArrayList<Contact> contacts;
     Button mAddContactsButton;
+    ContactsDatabaseHelper dbHelper = ContactsDatabaseHelper.getInstance(this);
 
 
     // STEP 2
