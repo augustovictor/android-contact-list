@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.augustovictor.contactlist.Adapter.ContactsAdapter;
+import com.augustovictor.contactlist.Helper.DividerItemDecoration;
 import com.augustovictor.contactlist.Model.Contact;
 import com.augustovictor.contactlist.R;
 
@@ -55,6 +56,9 @@ public class UserListActivity extends AppCompatActivity {
         // STEP 5
         rvContacts.setHasFixedSize(true);
 
+        // STEP 6
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
+        rvContacts.addItemDecoration(itemDecoration);
         // STEP 3
         mAddContactsButton = (Button) findViewById(R.id.add_contacts_button);
 
