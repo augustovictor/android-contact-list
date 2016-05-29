@@ -10,6 +10,9 @@ import android.util.Log;
 import com.augustovictor.contactlist.Model.Contact;
 import com.augustovictor.contactlist.Model.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by victoraweb on 5/29/16.
  */
@@ -97,7 +100,7 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
             long userId = addOrUpdateUser(contact.getUser());
             ContentValues values = new ContentValues();
             values.put(KEY_CONTACT_USER_ID_FK, userId);
-            values.put(KEY_CONTACT_NUMBER, contact.getNumber());
+            values.put(KEY_CONTACT_NUMBER, contact.getmNumber());
 
             db.insertOrThrow(TABLE_CONTACTS, null, values);
             db.setTransactionSuccessful();
@@ -148,5 +151,40 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
         }
 
         return userId;
+    }
+
+    // STEP 8
+    public List<Contact> getAllContacts() {
+        List<Contact> contacts = new ArrayList<>();
+
+        String CONTACTS_SELECT_QUERY = String.format("SELECT * FROM %s LEFT OUTER JOIN %s ON %s.%s = %s.%s",
+                TABLE_CONTACTS,
+                TABLE_USERS,
+                TABLE_CONTACTS, KEY_CONTACT_USER_ID_FK,
+                TABLE_USERS, KEY_USER_ID);
+
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.rawQuery(CONTACTS_SELECT_QUERY, null);
+        try {
+            if(cursor.moveToFirst()) {
+                do {
+                    User user = new User();
+                    user.setUserName(cursor.getString(cursor.getColumnIndex(KEY_USER_NAME)));
+                    user.setPictureUrl(cursor.getString(cursor.getColumnIndex(KEY_USER_PICTURE_URL)));
+
+                    Contact contact = new Contact(user, cursor.getString(cursor.getColumnIndex(KEY_CONTACT_NUMBER)));
+                    contacts.add(contact);
+
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to get contacts from database");
+        } finally {
+            if(cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+
+        return contacts;
     }
 }

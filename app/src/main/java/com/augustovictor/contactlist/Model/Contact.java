@@ -1,7 +1,5 @@
 package com.augustovictor.contactlist.Model;
 
-import java.util.ArrayList;
-
 /**
  * Created by victoraweb on 5/28/16.
  */
@@ -9,12 +7,13 @@ public class Contact {
     private String mName;
     private boolean mOnline;
     private User user;
-    private String number;
+    private String mNumber;
     private static int sLastContact_id = 0;
 
-    public Contact(String mName, boolean mOnline) {
-        this.mName = mName;
-        this.mOnline = mOnline;
+    public Contact(User user, String number) {
+        this.user = user;
+        this.mNumber = number;
+        this.mOnline = true;
     }
 
     public String getmName() {
@@ -41,20 +40,13 @@ public class Contact {
         this.user = user;
     }
 
-    public String getNumber() {
-        return number;
+    public String getmNumber() {
+        return mNumber;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setmNumber(String mNumber) {
+        this.mNumber = mNumber;
     }
 
-    public static ArrayList<Contact> createContactList(int numContacts) {
-        ArrayList<Contact> contacts = new ArrayList<>();
 
-        for (int i = 0; i < numContacts; i++) {
-            contacts.add(new Contact("Person " + ++sLastContact_id, i <= numContacts/2));
-        }
-        return contacts;
-    }
 }
