@@ -11,6 +11,7 @@ import android.widget.Button;
 import com.augustovictor.contactlist.Adapter.ContactsAdapter;
 import com.augustovictor.contactlist.Model.Contact;
 import com.augustovictor.contactlist.R;
+import com.augustovictor.contactlist.Helper.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 
@@ -24,6 +25,7 @@ public class UserListActivity extends AppCompatActivity {
     Button mAddContactsButton;
 
 
+    // STEP 2
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,15 @@ public class UserListActivity extends AppCompatActivity {
 
         rvContacts.setLayoutManager(mLinearLayoutManager);
 
+        // STEP 4
+        rvContacts.setOnScrollListener(new EndlessRecyclerViewScrollListener(mLinearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                loadNewContacts(adapter, rvContacts);
+            }
+        });
+
+        // STEP 3
         mAddContactsButton = (Button) findViewById(R.id.add_contacts_button);
 
         mAddContactsButton.setOnClickListener(new View.OnClickListener() {
@@ -53,13 +64,17 @@ public class UserListActivity extends AppCompatActivity {
 //                adapter.notifyItemInserted(contacts.size());
 
                 // Updating existing list - Adding many contacts
-                int currentSize = adapter.getItemCount();
-                ArrayList<Contact> newItems = Contact.createContactList(20);
-                contacts.addAll(newItems);
-                adapter.notifyItemRangeInserted(currentSize, newItems.size());
-                rvContacts.scrollToPosition(currentSize);
+                loadNewContacts(adapter, rvContacts);
 
             }
         });
+    }
+
+    private void loadNewContacts(ContactsAdapter adapter, RecyclerView rvContacts) {
+        int currentSize = adapter.getItemCount();
+        ArrayList<Contact> newItems = Contact.createContactList(20);
+        contacts.addAll(newItems);
+        adapter.notifyItemRangeInserted(currentSize, newItems.size());
+        rvContacts.scrollToPosition(currentSize);
     }
 }
