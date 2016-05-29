@@ -11,7 +11,6 @@ import android.widget.Button;
 import com.augustovictor.contactlist.Adapter.ContactsAdapter;
 import com.augustovictor.contactlist.Model.Contact;
 import com.augustovictor.contactlist.R;
-import com.augustovictor.contactlist.Helper.EndlessRecyclerViewScrollListener;
 
 import java.util.ArrayList;
 
@@ -46,12 +45,15 @@ public class UserListActivity extends AppCompatActivity {
         rvContacts.setLayoutManager(mLinearLayoutManager);
 
         // STEP 4
-        rvContacts.setOnScrollListener(new EndlessRecyclerViewScrollListener(mLinearLayoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                loadNewContacts(adapter, rvContacts);
-            }
-        });
+//        rvContacts.setOnScrollListener(new EndlessRecyclerViewScrollListener(mLinearLayoutManager) {
+//            @Override
+//            public void onLoadMore(int page, int totalItemsCount) {
+//                loadNewContacts(adapter, rvContacts);
+//            }
+//        });
+
+        // STEP 5
+        rvContacts.setHasFixedSize(true);
 
         // STEP 3
         mAddContactsButton = (Button) findViewById(R.id.add_contacts_button);
