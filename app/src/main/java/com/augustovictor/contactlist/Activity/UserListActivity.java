@@ -12,9 +12,11 @@ import com.augustovictor.contactlist.Adapter.ContactsAdapter;
 import com.augustovictor.contactlist.Helper.ContactsDatabaseHelper;
 import com.augustovictor.contactlist.Helper.DividerItemDecoration;
 import com.augustovictor.contactlist.Model.Contact;
+import com.augustovictor.contactlist.Model.User;
 import com.augustovictor.contactlist.R;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by victoraweb on 5/28/16.
@@ -22,9 +24,9 @@ import java.util.ArrayList;
 public class UserListActivity extends AppCompatActivity {
 
     // STEP 1
-    ArrayList<Contact> contacts;
+    List<Contact> contacts;
     Button mAddContactsButton;
-    ContactsDatabaseHelper dbHelper = ContactsDatabaseHelper.getInstance(this);
+    ContactsDatabaseHelper dbHelper;
 
 
     // STEP 2
@@ -33,11 +35,11 @@ public class UserListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        dbHelper = ContactsDatabaseHelper.getInstance(this);
 
         final RecyclerView rvContacts = (RecyclerView) findViewById(R.id.recycler_view);
 
-        contacts = Contact.createContactList(20);
-
+        contacts = dbHelper.getAllContacts();
         final ContactsAdapter adapter = new ContactsAdapter(contacts);
 
         rvContacts.setAdapter(adapter);
@@ -54,6 +56,7 @@ public class UserListActivity extends AppCompatActivity {
 //                loadNewContacts(adapter, rvContacts);
 //            }
 //        });
+
 
         // STEP 5
         rvContacts.setHasFixedSize(true);
@@ -72,17 +75,27 @@ public class UserListActivity extends AppCompatActivity {
 //                adapter.notifyItemInserted(contacts.size());
 
                 // Updating existing list - Adding many contacts
-                loadNewContacts(adapter, rvContacts);
+//                loadNewContacts(adapter, rvContacts);
+                Random random = new Random();
+                User user = new User();
+                user.setUserName("User " + random.nextInt(1000));
+                user.setPictureUrl("https://i.imgur.com/tGbaZCY.jpg");
+
+                Contact contact = new Contact(user, String.valueOf(999999999));
+
+                dbHelper.addContact(contact);
+                contacts.add(contact);
+                adapter.notifyItemInserted(contacts.size());
 
             }
         });
     }
 
-    private void loadNewContacts(ContactsAdapter adapter, RecyclerView rvContacts) {
-        int currentSize = adapter.getItemCount();
-        ArrayList<Contact> newItems = Contact.createContactList(20);
-        contacts.addAll(newItems);
-        adapter.notifyItemRangeInserted(currentSize, newItems.size());
-        rvContacts.scrollToPosition(currentSize);
-    }
+//    private void loadNewContacts(ContactsAdapter adapter, RecyclerView rvContacts) {
+//        int currentSize = adapter.getItemCount();
+//        ArrayList<Contact> newItems = Contact.createContactList(20);
+//        contacts.addAll(newItems);
+//        adapter.notifyItemRangeInserted(currentSize, newItems.size());
+//        rvContacts.scrollToPosition(currentSize);
+//    }
 }
