@@ -57,14 +57,14 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "(" +
-                KEY_CONTACT_ID + " INTEGER PRIMARY KEY" +
-                KEY_CONTACT_USER_ID_FK + " INTEGER REFERENCES" + TABLE_USERS +
+                KEY_CONTACT_ID + " INTEGER PRIMARY KEY, " +
+                KEY_CONTACT_USER_ID_FK + " INTEGER REFERENCES " + TABLE_USERS + ", " +
                 KEY_CONTACT_NUMBER + " TEXT" +
                 ")";
 
-        String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS +
-                KEY_USER_ID + " INTEGER PRIMARY KEY" +
-                KEY_USER_NAME + " TEXT" +
+        String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS + "(" +
+                KEY_USER_ID + " INTEGER PRIMARY KEY, " +
+                KEY_USER_NAME + " TEXT, " +
                 KEY_USER_PICTURE_URL + " TEXT" +
                 ")";
 
@@ -163,7 +163,7 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
                 TABLE_CONTACTS, KEY_CONTACT_USER_ID_FK,
                 TABLE_USERS, KEY_USER_ID);
 
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(CONTACTS_SELECT_QUERY, null);
         try {
             if(cursor.moveToFirst()) {
