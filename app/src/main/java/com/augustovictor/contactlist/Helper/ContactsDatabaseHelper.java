@@ -1,14 +1,21 @@
 package com.augustovictor.contactlist.Helper;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import com.augustovictor.contactlist.Model.Contact;
+import com.augustovictor.contactlist.Model.User;
 
 /**
  * Created by victoraweb on 5/29/16.
  */
 public class ContactsDatabaseHelper extends SQLiteOpenHelper {
 
+    private static final String TAG = "ContactsDatabaseHelper";
     // STEP 5.1
     private static ContactsDatabaseHelper sDb;
 
@@ -79,5 +86,67 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
             sDb = new ContactsDatabaseHelper(context.getApplicationContext());
         }
         return sDb;
+    }
+
+    // STEP 6
+    public void addContact(Contact contact) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.beginTransaction();
+        try {
+            long userId = addOrUpdateUser(contact.getUser());
+            ContentValues values = new ContentValues();
+            values.put(KEY_CONTACT_USER_ID_FK, userId);
+            values.put(KEY_CONTACT_NUMBER, contact.getNumber());
+
+            db.insertOrThrow(TABLE_CONTACTS, null, values);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to add contact to database");
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    // STEP 7
+    private long addOrUpdateUser(User user) {
+        SQLiteDatabase db = getWritableDatabase();
+        long userId = -1;
+
+        db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(KEY_USER_NAME, user.getUserName());
+            values.put(KEY_USER_PICTURE_URL, user.getPictureUrl());
+
+            int rows = db.update(TABLE_USERS, values, KEY_USER_NAME + " = ?", new String[] { user.getUserName() });
+
+            if(rows == 1) {
+                String usersSelectQuery = String.format("SELECT %s FROM %s WHERE %s = ?", KEY_USER_ID, TABLE_USERS, KEY_USER_NAME);
+                Cursor cursor = db.rawQuery(usersSelectQuery, new String[] { String.valueOf(user.getUserName()) });
+
+                try {
+                    if(cursor.moveToFirst()) {
+                        userId = cursor.getInt(0);
+                        db.setTransactionSuccessful();
+                    }
+                } finally {
+                    if(cursor != null && !cursor.isClosed()) {
+                        cursor.close();
+                    }
+                }
+
+            } else {
+                // If the userName did not already exist insert one
+                userId = db.insertOrThrow(TABLE_USERS, null, values);
+                db.setTransactionSuccessful();
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Error while trying to add or update user");
+        } finally {
+            db.endTransaction();
+        }
+
+        return userId;
     }
 }
