@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Contact {
     private String mName;
     private boolean mOnline;
+    private User user;
     private static int sLastContact_id = 0;
 
     public Contact(String mName, boolean mOnline) {
@@ -29,6 +30,14 @@ public class Contact {
 
     public void setmOnline(boolean mOnline) {
         this.mOnline = mOnline;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public static ArrayList<Contact> createContactList(int numContacts) {
