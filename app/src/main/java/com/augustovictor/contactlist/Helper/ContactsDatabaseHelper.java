@@ -1,5 +1,6 @@
 package com.augustovictor.contactlist.Helper;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -7,6 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by victoraweb on 5/29/16.
  */
 public class ContactsDatabaseHelper extends SQLiteOpenHelper {
+
+    // STEP 5.1
+    private static ContactsDatabaseHelper sDb;
 
     // STEP 1
     // Database info
@@ -26,6 +30,10 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
     private static final String KEY_USER_ID = "id";
     private static final String KEY_USER_NAME = "userName";
     private static final String KEY_USER_PICTURE_URL = "pictureUrl";
+
+    public ContactsDatabaseHelper(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
 
     // STEP 2
     @Override
@@ -63,5 +71,13 @@ public class ContactsDatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
             onCreate(db);
         }
+    }
+
+    // STEP 5.2
+    public static synchronized ContactsDatabaseHelper getInstance(Context context) {
+        if (sDb == null) {
+            sDb = new ContactsDatabaseHelper(context.getApplicationContext());
+        }
+        return sDb;
     }
 }
