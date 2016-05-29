@@ -30,7 +30,7 @@ public class UserListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        RecyclerView rvContacts = (RecyclerView) findViewById(R.id.recycler_view);
+        final RecyclerView rvContacts = (RecyclerView) findViewById(R.id.recycler_view);
 
         contacts = Contact.createContactList(20);
 
@@ -57,6 +57,7 @@ public class UserListActivity extends AppCompatActivity {
                 ArrayList<Contact> newItems = Contact.createContactList(20);
                 contacts.addAll(newItems);
                 adapter.notifyItemRangeInserted(currentSize, newItems.size());
+                rvContacts.scrollToPosition(currentSize);
 
             }
         });
