@@ -36,7 +36,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
         Contact contact = mContacts.get(position);
 
         TextView textView = holder.nameTextView;
-        textView.setText(contact.getmName());
+        textView.setText(contact.getUser().getUserName());
 
         Button button = holder.messageButton;
 
